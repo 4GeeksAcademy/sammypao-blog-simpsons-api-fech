@@ -1,0 +1,46 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+.env
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Blog de Starwars Reference Files
+Blog de Starwars_files/
+
+# PDF Reference Files (internal documentation)
+*.pdf
+
+# --- AI & Antigravity Ignored Files ---
+# Ignorar la configuración del agente, reglas y workflows
+.agent/
+.gemini/
+
+# Ignorar archivos de planificación o logs de la IA
+*.plan
+*.ai-log
+planning.md
+prompt_history.txt
+
+# Ignorar archivos de documentación interna del proceso (opcional)
+DOCUMENTATION_INTERNAL.md
+TODO_AI.md
