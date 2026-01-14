@@ -29,7 +29,7 @@ export const Episodes = () => {
                                  style={{height: '150px', objectFit: 'cover'}}
                             />
                             <div className="card-body">
-                                <h6 className="card-title font-weight-bold text-truncate" title={episode.name}>{episode.name}</h6> {/* API usa 'name' no 'title' */}
+                                <h6 className="card-title font-weight-bold text-truncate" title={episode.name}>{episode.name}</h6> 
                                 <p className="card-text small text-muted">Episodio {episode.episode_number}</p>
                                 <span className="badge badge-secondary badge-pill mt-2">{episode.airdate}</span>
                             </div>

@@ -4,8 +4,8 @@ export const initialStore=()=>{
     characters: [],
     episodes: [],
     locations: [],
-    favorites: [], // Lista global de favoritos
-    likes: {}      // Mapa de ID de personaje -> booleano
+    favorites: [], 
+    likes: []      
   }
 }
 
@@ -39,14 +39,21 @@ export default function storeReducer(store, action = {}) {
         favorites: store.favorites.filter(fav => fav.id !== action.payload.id)
       };
     case 'toggle_like':
-        // Alternar estado de like para un ID específico
-        const currentLikeStatus = store.likes[action.payload] || false;
+        const existingLike = store.likes.find(l => l.id === action.payload.id);
+        if (existingLike) {
+            return {
+                ...store,
+                likes: store.likes.filter(l => l.id !== action.payload.id)
+            };
+        }
         return {
             ...store,
-            likes: {
-                ...store.likes,
-                [action.payload]: !currentLikeStatus
-            }
+            likes: [...store.likes, action.payload]
+        };
+    case 'remove_like':
+        return {
+            ...store,
+            likes: store.likes.filter(l => l.id !== action.payload.id)
         }
     default:
       throw Error('Unknown action.');
