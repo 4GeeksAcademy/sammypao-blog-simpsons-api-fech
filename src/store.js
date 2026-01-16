@@ -5,7 +5,8 @@ export const initialStore=()=>{
     episodes: [],
     locations: [],
     favorites: [], 
-    likes: []      
+    likes: [],
+    searchQuery: ''
   }
 }
 
@@ -54,8 +55,13 @@ export default function storeReducer(store, action = {}) {
         return {
             ...store,
             likes: store.likes.filter(l => l.id !== action.payload.id)
-        }
+        };
+    case 'set_search':
+        return {
+            ...store,
+            searchQuery: action.payload
+        };
     default:
-      throw Error('Unknown action.');
+      return store;
   }    
 }

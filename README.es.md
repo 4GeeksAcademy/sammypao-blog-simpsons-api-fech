@@ -1,73 +1,168 @@
-# Plantilla WebApp con React JS
+# Blog de Los Simpsons 🍩
 
-> 🎥 Esta plantilla [cuenta con un video tutorial](https://youtu.be/9blWKQTJ1FA), para verlo haz clic aquí.
+Aplicación web para explorar personajes, episodios y ubicaciones del universo de Los Simpsons.
 
-Utilizada por [4Geeks.com](https://4geeks.com/) y los estudiantes de [4Geeks Academy](https://4geeksacademy.com/), esta plantilla ayuda a iniciar tus primeras aplicaciones web multi-página integrándose con la última versión de React, React-Router, despliegues en Vercel y [Vite](https://4geeks.com/es/lesson/introduccion-a-vite-como-empaquetador-de-modulos) para el empaquetado.
+## 🚀 Inicio Rápido
 
-### Empezando:
+```bash
+# Instalar dependencias
+npm install
 
-> 📦 Asegúrate de usar al menos la versión 20 de Node.
+# Iniciar servidor de desarrollo
+npm run dev
+```
 
-1. Instala las dependencias del paquete node escribiendo: `$ npm install`
+La aplicación estará disponible en `http://localhost:3000/`
 
-2. Crea un archivo .env basado en el .env.example escribiendo `$ cp .env.example .env`
+---
 
-3. ¡Comienza a programar! y el servidor de desarrollo de vite con recarga en vivo escribiendo: `$ npm run start`
+## 📁 Estructura del Proyecto
 
-### Estilos
+```
+src/
+├── components/          # Componentes reutilizables
+│   ├── Navbar.jsx       # Navegación con búsqueda, favoritos y likes
+│   └── CharacterCard.jsx # Tarjeta de personaje
+├── pages/               # Páginas de la aplicación
+│   ├── Home.jsx         # Lista de personajes
+│   ├── Single.jsx       # Detalle de personaje
+│   ├── Episodes.jsx     # Lista de episodios
+│   ├── Locations.jsx    # Lista de ubicaciones
+│   └── Layout.jsx       # Layout principal
+├── services/            # Servicios de API
+│   └── simpsonsServices.js
+├── hooks/               # Hooks personalizados
+│   └── useGlobalReducer.jsx
+├── store.js             # Estado global
+└── routes.jsx           # Configuración de rutas
+```
 
-Puedes actualizar el archivo `./index.css` o crear nuevos archivos `.css` e importarlos en tus archivos css o js actuales según tus necesidades.
+---
 
-### Componentes
+## 🗂️ Estado Global (Store)
 
-Agrega más archivos en tu carpeta `./src/components` según los necesites e impórtalos en tus paginas actuales según sea necesario.
+El estado centralizado se gestiona con `useReducer` + Context API.
 
-### Páginas
+### Propiedades del Store
 
-Agrega más archivos en tu carpeta `./js/pages` e impórtalos en `./routes.jsx`.
-Cada página debe coincidir con al menos una ruta dentro de `routes.jsx`
+| Propiedad     | Tipo   | Descripción                        |
+| ------------- | ------ | ---------------------------------- |
+| `characters`  | Array  | Lista de personajes cargados       |
+| `episodes`    | Array  | Lista de episodios                 |
+| `locations`   | Array  | Lista de ubicaciones               |
+| `favorites`   | Array  | Personajes marcados como favoritos |
+| `likes`       | Array  | Personajes con "me gusta"          |
+| `searchQuery` | String | Texto actual del campo de búsqueda |
 
-### Almacenamiento Centralizado con useReducer
+### Acciones Disponibles
 
-Esta plantilla viene con un estado general y centralizado que se comparte con todas las páginas y componentes, lo llamamos "store".
+| Acción            | Payload      | Descripción                           |
+| ----------------- | ------------ | ------------------------------------- |
+| `set_characters`  | `Array`      | Establece lista de personajes         |
+| `set_episodes`    | `Array`      | Establece lista de episodios          |
+| `set_locations`   | `Array`      | Establece lista de ubicaciones        |
+| `add_favorite`    | `{id, name}` | Añade personaje a favoritos           |
+| `remove_favorite` | `{id}`       | Elimina personaje de favoritos        |
+| `toggle_like`     | `{id, name}` | Añade/quita "me gusta" a un personaje |
+| `remove_like`     | `{id}`       | Elimina "me gusta" de un personaje    |
+| `set_search`      | `String`     | Actualiza texto de búsqueda           |
 
-El archivo `./src/store.js` tiene una estructura predeterminada para el store, te animamos a cambiarla y adaptarla a tus necesidades de datos (por ejemplo, si estás haciendo una `Lista de tareas` probablemente tendrás un arreglo de tareas aquí).
-
-💡Nota: Hay un ejemplo usando el store y dispatcher de useReducer en el archivo `pages/demo.js`;
-
-+ Entiende [como funciona el `useReducer`](https://4geeks.com/es/lesson/que-es-usereducer-react)
-+ Lee más sobre [implementar un estado global con API de Contexto](https://4geeks.com/es/lesson/context-api-es)
-+ Lee más sobre [hooks de react](https://4geeks.com/es/lesson/react-hooks-explained-es)
-
-El `Proveedor` del store para este contexto ya está configurado en `./src/main.jsx`. Puedes acceder al store desde cualquier componente usando el hook `useGlobalReducer` para obtener el `store` y el `despachador`. Consulta `/views/demo.js` para ver una demostración. Aquí tienes un ejemplo más pequeño:
+### Ejemplo de Uso
 
 ```jsx
-import useGlobalReducer from "./src/hooks/useGlobalReducer";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
-const MyComponentSuper = () => {
-  //aquí usas el hook para obtener el despachador y el almacén
-  import { dispatch, store } = useGlobalReducer();
+const MiComponente = () => {
+  const { store, dispatch } = useGlobalReducer();
 
-  return <div>{/* puedes usar tus acciones o el almacén dentro del html */}</div>
-}
+  const agregarFavorito = (personaje) => {
+    dispatch({
+      type: "add_favorite",
+      payload: { id: personaje.id, name: personaje.character },
+    });
+  };
+
+  return <div>{store.characters.length} personajes cargados</div>;
+};
 ```
 
-## ¡Publica tu sitio web!
+---
 
-1. **Vercel:** El proveedor de alojamiento GRATUITO recomendado es [vercel.com](https://vercel.com/), puedes desplegar en 1 minuto escribiendo los siguientes 2 comandos:
+## 🔍 Barra de Búsqueda
 
-Iniciar sesión (necesitas tener una cuenta):
-```sh
-$ npm i vercel -g && vercel login
+La Navbar incluye una barra de búsqueda con sugerencias en tiempo real.
+
+### Funcionamiento
+
+1. El usuario escribe en el input
+2. Se dispara `set_search` actualizando `searchQuery` en el store
+3. Se filtran los personajes que coincidan (máximo 5 sugerencias)
+4. Al hacer clic en una sugerencia, navega al detalle y limpia la búsqueda
+
+### Lógica de Filtrado
+
+```jsx
+const suggestions =
+  searchQuery.length > 0
+    ? characters
+        .filter((c) =>
+          c.character.toLowerCase().startsWith(searchQuery.toLowerCase())
+        )
+        .slice(0, 5)
+    : [];
 ```
-Desplegar:
-```sh
-$ vercel --prod
+
+---
+
+## 🌐 API
+
+Se consume la API de Los Simpsons: `https://thesimpsonsapi.com/api`
+
+### Servicios (`simpsonsServices.js`)
+
+| Función         | Endpoint               | Retorna              |
+| --------------- | ---------------------- | -------------------- |
+| `getCharacters` | `/characters?limit=50` | Array de personajes  |
+| `getEpisodes`   | `/episodes?limit=50`   | Array de episodios   |
+| `getLocations`  | `/locations?limit=50`  | Array de ubicaciones |
+
+### Imágenes CDN
+
 ```
-✎ Nota: Si no tienes una cuenta, simplemente ve a vercel.com, crea una cuenta y regresa aquí.
+Personajes: https://cdn.thesimpsonsapi.com/500/character/{id}.webp
+Episodios:  https://cdn.thesimpsonsapi.com/200/episode/{id}.webp
+Ubicaciones: https://cdn.thesimpsonsapi.com/500/location/{id}.webp
+```
 
-![Procedimiento de ejemplo de Vercel para desplegar](https://github.com/4GeeksAcademy/react-hello-webapp/blob/4b530ba091a981d3916cc6e960e370decaf2e234/docs/deploy.png?raw=true)
+---
 
-## Contribuidores
+## 🛣️ Rutas
 
-Esta plantilla fue construida como parte del [Coding Bootcamp](https://4geeksacademy.com/us/coding-bootcamp) de 4Geeks Academy por [Alejandro Sanchez](https://twitter.com/alesanchezr) y muchos otros contribuidores. Descubre más sobre nuestro [Curso de Desarrollador Full Stack](https://4geeksacademy.com/us/coding-bootcamps/part-time-full-stack-developer), [Curso de data-science](https://4geeksacademy.com/es/coding-bootcamps/curso-datascience-machine-learning) y [Curso de Ciberseguridad](https://4geeksacademy.com/es/coding-bootcamps/curso-ciberseguridad).
+| Ruta                | Componente  | Descripción          |
+| ------------------- | ----------- | -------------------- |
+| `/`                 | `Home`      | Lista de personajes  |
+| `/character/:theId` | `Single`    | Detalle de personaje |
+| `/episodes`         | `Episodes`  | Lista de episodios   |
+| `/locations`        | `Locations` | Lista de ubicaciones |
+
+---
+
+## 🚀 Despliegue en Vercel
+
+```bash
+# Instalar Vercel CLI e iniciar sesión
+npm i vercel -g && vercel login
+
+# Desplegar a producción
+vercel --prod
+```
+
+---
+
+## 🛠️ Tecnologías
+
+- React 18
+- React Router DOM 6
+- Vite 4
+- Bootstrap 5
+- Font Awesome

@@ -6,7 +6,14 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
  */
 export const Navbar = () => {
     const { store, dispatch } = useGlobalReducer();
-    const { favorites, likes } = store;
+    const { favorites, likes, searchQuery, characters } = store;
+
+    /** Filtra personajes cuyo nombre empiece con la búsqueda (máximo 5 sugerencias). */
+    const suggestions = searchQuery.length > 0
+        ? characters.filter(c => 
+            c.character.toLowerCase().startsWith(searchQuery.toLowerCase())
+          ).slice(0, 5)
+        : [];
 
     return (
         <nav className="navbar navbar-light bg-light mb-3 px-4">
@@ -17,6 +24,34 @@ export const Navbar = () => {
                 <Link to="/episodes" className="btn btn-outline-primary mx-2">Episodios</Link>
                 <Link to="/locations" className="btn btn-outline-success mx-2">Ubicaciones</Link>
                 
+                <div className="position-relative mx-3">
+                    <form className="d-flex" role="search" onSubmit={(e) => e.preventDefault()}>
+                        <input 
+                            className="form-control me-2" 
+                            type="search" 
+                            placeholder="Buscar personaje..." 
+                            aria-label="Search"
+                            value={searchQuery}
+                            onChange={(e) => dispatch({ type: 'set_search', payload: e.target.value })}
+                        />
+                        <button className="btn btn-warning" type="submit">Buscar</button>
+                    </form>
+                    {suggestions.length > 0 && (
+                        <ul className="list-group position-absolute w-100 mt-1" style={{ zIndex: 1000 }}>
+                            {suggestions.map(char => (
+                                <Link 
+                                    key={char.id} 
+                                    to={`/character/${char.id}`} 
+                                    className="list-group-item list-group-item-action"
+                                    onClick={() => dispatch({ type: 'set_search', payload: '' })}
+                                >
+                                    {char.character}
+                                </Link>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
                 <div className="btn-group mx-2">
                     <button type="button" className="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Favoritos <span className="badge text-bg-light">{favorites.length}</span>
